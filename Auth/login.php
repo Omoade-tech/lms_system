@@ -1,46 +1,50 @@
 <?php
 session_start(); 
-include("../config/database.php");
+include("../lms_system/config/database.php");
+
+$error_message = "";
 
 if (isset($_POST['log'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
 
-    // Initialize variables
-    $role = null;
-    $row = null;
+    // Check if username and password are entered
+    if (empty($username) || empty($password)) {
+        $error_message = "Both username and password are required.";
+    } else {
+        $role = null;
+        $row = null;
 
-    // Check in the admins table
-    $sql = "SELECT * FROM admins WHERE username = ?";
-    $stmt = $connect->prepare($sql);
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $role = "admin";
-    }
-
-    // If not found in admins, check in the students table
-    if (!$row) {
-        $sql = "SELECT * FROM students WHERE username = ?";
+        // Check in admins table
+        $sql = "SELECT * FROM admins WHERE UserName = ? AND password = ?";
         $stmt = $connect->prepare($sql);
-        $stmt->bind_param("s", $username);
+        $stmt->bind_param("ss", $username, $password);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            $role = "student";
+            $role = "admin";
         }
-    }
 
-    // Validate password and handle login
-    if ($row) {
-        $_SESSION['username'] = $row['username'];
-        $_SESSION['password'] = $row['password'];
+        // Check in students table if not found in admins
+        if (!$row) {
+            $sql = "SELECT * FROM students WHERE UserName = ? AND password = ?";
+            $stmt = $connect->prepare($sql);
+            $stmt->bind_param("ss", $username, $password);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $role = "student";
+            }
+        }
+
+        // Handle successful login
+       // If a valid user is found, start the session and redirect
+       if ($row && $role) {
+        $_SESSION['student_id'] = $row['id'];  
         $_SESSION['role'] = $role;
 
-        // Redirect based on role
         if ($role === "admin") {
             header("location:/lms_system/views/admin.php");
         } elseif ($role === "student") {
@@ -51,6 +55,8 @@ if (isset($_POST['log'])) {
         $error_message = "Incorrect username or password.";
     }
 }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -84,6 +90,7 @@ if (isset($_POST['log'])) {
                        class="form-control" placeholder="Enter your password" required>
             </div>
             <button type="submit" name="log" class="btn btn-primary w-100">Login</button>
+            <a href="/lms_system/Auth/signup.php">create account</a>
         </form>
     </div>
 </div>

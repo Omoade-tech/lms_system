@@ -1,5 +1,5 @@
 <?php
-include("config/database.php");
+include("../config/database.php");
 
 // Initialize variables
 $errors = [];
@@ -60,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // If no errors, check if username exists and insert into database
     if (empty($errors)) {
         // Check if username exists using prepared statement
-        $stmt = $connect->prepare("SELECT username FROM students WHERE username = ?");
+        $stmt = $connect->prepare("SELECT UserName FROM students WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $errors['username'] = "Username already exists";
         } else {
             // Insert new student using prepared statement
-            $stmt = $connect->prepare("INSERT INTO students (username, password, name, age, sex, phone, email) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $connect->prepare("INSERT INTO students (UserName, password, name, age, sex, phone, email) VALUES (?, ?, ?, ?, ?, ?, ?)");
             // $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             $stmt->bind_param("sssssss", $username, $password, $name, $age, $sex, $phone, $email);
 
