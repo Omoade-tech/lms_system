@@ -34,7 +34,7 @@
                     <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
-                        <li><a class="dropdown-item" href="\xampp\htdocs\lms_system\index.php">Logout</a></li>
+                        <li><a class="dropdown-item" href="/lms_system/Auth/logout.php">Logout</a></li>
                     </ul>
                 </div>
             </div>

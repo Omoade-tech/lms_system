@@ -137,4 +137,50 @@ class Book {
         
         return $books;
     }
+    public function borrowBook($id) {
+        try {
+            // Check if the book is available
+            $book = $this->getBookById($id);
+    
+            if (!$book) {
+                throw new Exception("Book not found.");
+            }
+    
+            if ($book['available_copies'] <= 0) {
+                throw new Exception("No available copies to borrow.");
+            }
+    
+            // Decrease available copies
+            $query = "UPDATE books SET available_copies = available_copies - 1 WHERE id = ?";
+            $stmt = $this->connect->prepare($query);
+            $stmt->bind_param("i", $id);
+    
+            return $stmt->execute();
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+    
+    public function returnBook($id) {
+        try {
+            // Check if the book exists
+            $book = $this->getBookById($id);
+    
+            if (!$book) {
+                throw new Exception("Book not found.");
+            }
+    
+            // Increase available copies
+            $query = "UPDATE books SET available_copies = available_copies + 1 WHERE id = ?";
+            $stmt = $this->connect->prepare($query);
+            $stmt->bind_param("i", $id);
+    
+            return $stmt->execute();
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+    
 }

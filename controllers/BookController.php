@@ -39,4 +39,12 @@ class BookController {
         }
         return $this->bookModel->searchBooks($searchTerm);
     }
+    public function borrowBook($id) {
+        return $this->bookModel->borrowBook($id);
+    }
+    
+    public function returnBook($id) {
+        return $this->bookModel->returnBook($id);
+    }
+    
 }

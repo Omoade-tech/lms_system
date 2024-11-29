@@ -16,46 +16,51 @@ $books = $bookController->getAllBooks();
 </head>
 
 <body>
-  
-<div class="container mt-5">
-        <div class="card">
-            <div class="card-body">
-  
-    <table class="table">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">Title</th>
-          <th scope="col">Author</th>
-          <th scope="col">ISBN</th>
-          <th scope="col">Available Copies</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php if (!empty($books)) : ?>
-          <?php foreach ($books as $book) : ?>
+
+  <div class="container mt-5">
+    <div class="card">
+      <div class="card-body">
+
+        <table class="table">
+          <thead class="thead-dark">
             <tr>
-
-              <td><?= htmlspecialchars($book['title']) ?></td>
-              <td><?= htmlspecialchars($book['author']) ?></td>
-              <td><?= htmlspecialchars($book['isbn']) ?></td>
-              <td>
-                <?php if ($book['available_copies'] > 0): ?>
-                  <span class="text-success">Available</span>
-                <?php else: ?>
-                  <span class="text-danger">Not Available</span>
-                <?php endif; ?>
-              </td>
-              <td> <a href="#" class="btn btn-success"> Borrow</a></td>
-
+              <th scope="col">Title</th>
+              <th scope="col">Author</th>
+              <th scope="col">ISBN</th>
+              <th scope="col">Available Copies</th>
+              <th scope="col">Actions</th>
             </tr>
-          <?php endforeach ?>
-        <?php endif ?>
+          </thead>
+          <tbody>
+            <?php if (!empty($books)) : ?>
+              <?php foreach ($books as $book) : ?>
+                <tr>
 
-      </tbody>
-    </table>
-  </div>
-  </div>
+                  <td><?= htmlspecialchars($book['title']) ?></td>
+                  <td><?= htmlspecialchars($book['author']) ?></td>
+                  <td><?= htmlspecialchars($book['isbn']) ?></td>
+                  <td>
+                    <?php if ($book['available_copies'] > 0): ?>
+                      <span class="text-success">Available</span>
+                    <?php else: ?>
+                      <span class="text-danger">Not Available</span>
+                    <?php endif; ?>
+                  </td>
+                  <td>
+                    <a href="/lms_system/views/student/viewbook.php?id=<?= $book['id'] ?>"
+                      class="btn btn-info btn-sm <?= $book['available_copies'] == 0 ? 'disabled' : '' ?>">
+                      Borrow
+                    </a>
+
+                  </td>
+                </tr>
+              <?php endforeach ?>
+            <?php endif ?>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </body>
 
