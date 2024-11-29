@@ -2,8 +2,8 @@
 
 session_start();
 
-include_once("../config/database.php"); 
-include_once("../controllers/studentController.php"); 
+include_once("/xampp/htdocs/lms_system/config/database.php"); 
+include_once("/xampp/htdocs/lms_system/controllers/studentController.php"); 
 
 // Initialize database connection
 $studentController = new StudentController($connect);
@@ -51,10 +51,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Student Profile</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
 </head>
+<style>
+    .nav-link{
+        color:blue;
+    }
+</style>
 <body>
 <?php
-include("../templates/header.php");
+include("/xampp/htdocs/lms_system/templates/header.php");
 ?>
     <div class="container mt-5">
         <!-- Student Profile Display -->
@@ -67,6 +73,7 @@ include("../templates/header.php");
                 <p class="card-text"><strong>Phone:</strong> <?= isset($student['phone']) ? htmlspecialchars($student['phone']) : 'No Phone Available'; ?></p>
                 <p class="card-text"><strong>Sex:</strong> <?= isset($student['sex']) ? htmlspecialchars($student['sex']) : 'No Sex Available'; ?></p>
                 <p class="card-text"><strong>Age:</strong> <?= isset($student['age']) ? htmlspecialchars($student['age']) : 'No Age Available'; ?></p>
+                <p class="card-text"><strong>Total Book Borrowed:</strong> <?= isset($student['total_books_borrowed']) ? htmlspecialchars($student['total_books_borrowed']) : 'error'; ?></p>
                 
                 <!-- Button to trigger the update modal -->
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateProfileModal">Edit Profile</button>
@@ -113,7 +120,8 @@ include("../templates/header.php");
         </div>
     </div>
     <?php
-include("../templates/footer.php");
+    include("/xampp/htdocs/lms_system/views/student/books.php");
+include("/xampp/htdocs/lms_system/templates/footer.php");
 ?>
 
     <!-- Bootstrap JS and Popper.js -->

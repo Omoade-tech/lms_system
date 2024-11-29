@@ -1,1 +1,0 @@
-https://github.com/Omoade-tech/Quiz-App.git

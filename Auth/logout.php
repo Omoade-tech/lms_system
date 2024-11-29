@@ -1,9 +1,10 @@
 <?php
 session_start(); 
-$_SESSION = array();
+// $_SESSION = array();
 
 unset($_SESSION['login']);
-session_destroy(); // destroy session
-header("location:index.php"); 
-?>
+session_destroy(); 
+header("location: ./views/index.php"); 
 
+
+?>

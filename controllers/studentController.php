@@ -1,5 +1,5 @@
 <?php
-require_once '../models/Student.php'; // Use relative path
+require_once '/xampp/htdocs/lms_system/models/Student.php'; 
 
 class StudentController
 {
@@ -9,22 +9,6 @@ class StudentController
     {
         $this->student = new Student($db);
     }
-
-    // Login function
-    // public function login($username, $password)
-    // {
-    //     if (empty($username) || empty($password)) {
-    //         return ['error' => 'Username and password are required'];
-    //     }
-
-    //     $user = $this->student->login($username, $password);
-
-    //     if ($user) {
-    //         return ['success' => true, 'user' => $user];
-    //     }
-
-    //     return ['error' => 'Invalid username or password'];
-    // }
 
     // Find Student by ID function
     public function findStudentById($id)

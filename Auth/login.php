@@ -1,6 +1,6 @@
 <?php
 session_start(); 
-include("../lms_system/config/database.php");
+include("/xampp/htdocs/lms_system/config/database.php");
 
 $error_message = "";
 
@@ -46,9 +46,9 @@ if (isset($_POST['log'])) {
         $_SESSION['role'] = $role;
 
         if ($role === "admin") {
-            header("location:/lms_system/views/admin.php");
+            header("location:/lms_system/views/Admin/admin.php");
         } elseif ($role === "student") {
-            header("location: /lms_system/views/students.php");
+            header("location: /lms_system/views/student/students.php");
         }
         exit;
     } else {
