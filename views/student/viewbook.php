@@ -10,6 +10,17 @@ if (!$book) {
     echo "Book not found.";
     exit;
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id = $_POST['id'];
+    $result = $bookController->borrowBook($id);
+  
+    if ($result) {
+        header('Location: ../lms_system/views/student/students.php?message=Book Borrowed Successfully');
+    } else {
+        header('Location: /views/student/book.php?error=Failed to Borrow Book');
+  }
+  }
+
 ?>
 
 <!DOCTYPE html>

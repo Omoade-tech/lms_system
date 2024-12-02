@@ -19,8 +19,6 @@ class Student
         $this->connect = $db;
     }
 
- 
-
     // Enhanced Find by ID Method
     public function findById($id)
     {
@@ -74,8 +72,7 @@ class Student
                 $this->phone, 
                 $this->sex, 
                 $this->age, 
-                $this->id,
-                // $this->total_books_borrowed,
+                $this->id
             );
 
             if ($stmt->execute()) {
@@ -89,6 +86,30 @@ class Student
             return false;
         } catch (Exception $e) {
             error_log("Error updating student profile: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    // Method to Retrieve All Students
+    public function findAll()
+    {
+        $query = "SELECT id, name, UserName, email, phone, sex, age, total_books_borrowed 
+                  FROM " . $this->table;
+
+        try {
+            $stmt = $this->connect->prepare($query);
+            $stmt->execute();
+
+            $result = $stmt->get_result();
+            $students = [];
+
+            while ($row = $result->fetch_assoc()) {
+                $students[] = $row;
+            }
+
+            return $students; // Returns an array of all students
+        } catch (Exception $e) {
+            error_log("Error retrieving all students: " . $e->getMessage());
             return false;
         }
     }

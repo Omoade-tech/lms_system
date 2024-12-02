@@ -121,7 +121,10 @@ include("/xampp/htdocs/lms_system/templates/header.php");
     </div>
     <?php
     include("/xampp/htdocs/lms_system/views/student/books.php");
+    include("/xampp/htdocs/lms_system/views/Admin/books.php");
+
 include("/xampp/htdocs/lms_system/templates/footer.php");
+
 ?>
 
     <!-- Bootstrap JS and Popper.js -->

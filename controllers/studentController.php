@@ -25,7 +25,6 @@ class StudentController
     
         return ['error' => 'Student not found'];
     }
-    
 
     // Update Student Profile function
     public function updateProfile($data)
@@ -56,5 +55,17 @@ class StudentController
         }
 
         return ['error' => 'Failed to update profile'];
+    }
+
+    // New Method: Find All Students
+    public function findAll()
+    {
+        $students = $this->student->findAll();
+
+        if ($students) {
+            return ['success' => true, 'students' => $students];
+        }
+
+        return ['error' => 'No students found'];
     }
 }
