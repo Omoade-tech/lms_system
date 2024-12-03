@@ -111,8 +111,8 @@ include("/xampp/htdocs/lms_system/templates/Admin.php");
   <div class="col-12 col-md-6 col-lg-3">
     <div class="card text-center card4" style="height: 12rem;">
       <div class="card-body d-flex flex-column align-items-center justify-content-center">
-        <i class="bi bi-clock-history fs-1 mb-2"></i> 
-        <h4>Transaction History</h4>
+        <i class="bi bi-clock-history fs-1 mb-2"></i>
+        <h4> <a href="/lms_system/views/Admin/transaction.php">Transaction History</a></h4>
       </div>
     </div>
   </div>

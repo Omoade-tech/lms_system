@@ -137,8 +137,8 @@ class Book {
         }
     }
 
-    // Borrow a book
-    public function borrowBook($id) {
+    // Borrow a book with grace period
+    public function borrowBook($id, $borrow_date, $return_date) {
         try {
             $book = $this->getBookById($id);
 
@@ -150,9 +150,18 @@ class Book {
                 throw new Exception("No available copies to borrow.");
             }
 
-            $sql = "UPDATE books SET available_copies = available_copies - 1 WHERE id = ?";
-            $stmt = $this->connect->prepare($sql);
+            // Update available copies
+            $updateSql = "UPDATE books SET available_copies = available_copies - 1 WHERE id = ?";
+            $stmt = $this->connect->prepare($updateSql);
             $stmt->bind_param("i", $id);
+            if (!$stmt->execute()) {
+                throw new Exception("Failed to update book availability.");
+            }
+
+            // Record borrow transaction
+            $Sql = "INSERT INTO transactions (book_id, borrow_date, return_date, status) VALUES (?, ?, ?, 'Borrowed')";
+            $stmt = $this->connect->prepare($Sql);
+            $stmt->bind_param("iss", $id, $borrow_date, $return_date);
 
             return $stmt->execute();
         } catch (Exception $e) {

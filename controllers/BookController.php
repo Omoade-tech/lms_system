@@ -22,12 +22,25 @@ class BookController {
 
     public function updateBook($bookData) {
         return $this->bookModel->updateBook($bookData);
-       
-        
     }
 
     public function deleteBook($id) {
         return $this->bookModel->delete($id);
+    }
+
+    public function borrowBook($id) {
+        // Check if the book is available
+        $book = $this->bookModel->getBookById($id);
+        if (!$book || $book['available_copies'] <= 0) {
+            return false; 
+        }
+
+        
+        $borrow_date = date("Y-m-d"); 
+        $return_date = date("Y-m-d", strtotime("+30 days")); 
+
+        // Update the book and create a transaction
+        return $this->bookModel->borrowBook($id, $borrow_date, $return_date);
     }
 
     public function handleRequest() {
@@ -57,6 +70,7 @@ class BookController {
                 }
                 exit;
             }
+
             if (isset($_POST['addBook'])) {
                 $bookData = [
                     'title' => $_POST['title'],
@@ -66,9 +80,19 @@ class BookController {
                 ];
             
                 if ($this->createBook($bookData)) {
-                    header("Location: /lms_system/views/Admin/admin.php?success=add");
+                    header("Location: /lms_system/views/Admin/addbook.php?success=add");
                 } else {
                     header("Location: /lms_system/views/Admin/admin.php?error=add");
+                }
+                exit;
+            }
+
+            if (isset($_POST['borrowBook'])) {
+                $id = $_POST['id'];
+                if ($this->borrowBook($id)) {
+                    header("Location: /lms_system/views/student/students.php?success=borrow");
+                } else {
+                    header("Location: /lms_system/views/student/book.php?error=borrow");
                 }
                 exit;
             }
