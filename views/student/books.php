@@ -5,16 +5,6 @@ include_once("/xampp/htdocs/lms_system/controllers/BookController.php");
 $bookController = new BookController($connect);
 $books = $bookController->getAllBooks();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $id = $_POST['id'];
-  $result = $bookController->borrowBook($id);
-
-  if ($result) {
-      header('Location: ../lms_system/views/student/books.php?message=Book Borrowed Successfully');
-  } else {
-      header('Location: /view/book.php?error=Failed to Borrow Book');
-}
-}
 ?>
 
 <!DOCTYPE html>

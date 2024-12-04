@@ -122,6 +122,8 @@ include("/xampp/htdocs/lms_system/templates/header.php");
     <?php
     include("/xampp/htdocs/lms_system/views/student/books.php");
 
+    // include("/xampp/htdocs/lms_system/views/student/borrow.php");
+
 include("/xampp/htdocs/lms_system/templates/footer.php");
 
 ?>
