@@ -81,23 +81,64 @@ class TransactionController {
         }
     }
 
-    // Borrow a book
-    public function borrowBook($student_id, $book_id) {
-        if (empty($student_id) || empty($book_id)) {
-            return $this->sendResponse('error', null, 'Missing student ID or book ID');
-        }
+    // // Borrow a book
+    // public function borrowBook($student_id, $book_id) {
+    //     if (empty($student_id) || empty($book_id)) {
+    //         return $this->sendResponse('error', null, 'Missing student ID or book ID');
+    //     }
 
-        try {
-            $response = $this->transaction->borrowBook($student_id, $book_id);
-            return $this->sendResponse(
-                $response['success'] ? 'success' : 'error',
-                null,
-                $response['message']
-            );
-        } catch (Exception $e) {
-            return $this->sendResponse('error', null, $e->getMessage());
-        }
+    //     try {
+    //         $response = $this->transaction->borrowBook($student_id, $book_id);
+    //         return $this->sendResponse(
+    //             $response['success'] ? 'success' : 'error',
+    //             null,
+    //             $response['message']
+    //         );
+    //     } catch (Exception $e) {
+    //         return $this->sendResponse('error', null, $e->getMessage());
+    //     }
+    // }
+    // In TransactionController
+//         public function borrowBook($student_id, $book_id, $return_date) {
+//     if (empty($student_id) || empty($book_id) || empty($return_date)) {
+//         return $this->sendResponse('error', null, 'Missing student ID, book ID, or return date');
+//     }
+
+//     // Check if the student has already borrowed the book
+//     if ($this->transaction->hasBorrowedBook($student_id, $book_id)) {
+//         return $this->sendResponse('error', null, 'You have already borrowed this book');
+//     }
+
+//     try {
+//         $response = $this->transaction->borrowBook($student_id, $book_id, $return_date);
+//         return $this->sendResponse(
+//             $response['success'] ? 'success' : 'error',
+//             null,
+//             $response['message']
+//         );
+//     } catch (Exception $e) {
+//         return $this->sendResponse('error', null, $e->getMessage());
+//     }
+// }
+// Controller: TransactionController.php
+public function borrowBook($student_id, $book_id, $return_date) {
+    if (empty($student_id) || empty($book_id) || empty($return_date)) {
+        return $this->sendResponse('error', null, 'Missing student ID, book ID, or return date');
     }
+
+    try {
+        $response = $this->transaction->borrowBook($student_id, $book_id, $return_date);
+        return $this->sendResponse(
+            $response['success'] ? 'success' : 'error',
+            null,
+            $response['message']
+        );
+    } catch (Exception $e) {
+        return $this->sendResponse('error', null, $e->getMessage());
+    }
+}
+
+
 
     // Return a book
     public function returnBook($transaction_id) {

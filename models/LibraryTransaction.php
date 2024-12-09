@@ -121,27 +121,87 @@ class Transaction {
 
 
     // Borrow a book
-    public function borrowBook($student_id, $book_id) {
-        $borrow_date = date('Y-m-d');
-        $return_date = null; 
-        $status = 'borrowed';
+    // public function borrowBook($student_id, $book_id) {
+    //     $borrow_date = date('Y-m-d');
+    //     $status = 'borrowed';
+    
+    //     // Start transaction
+    //     $this->connect->begin_transaction();
+    
+    //     try {
+    //         // Decrement available copies
+    //         $updateBookSql = "UPDATE books SET available_copies = available_copies - 1 WHERE id = ? AND available_copies > 0";
+    //         $updateStmt = $this->connect->prepare($updateBookSql);
+    //         $updateStmt->bind_param("i", $book_id);
+    //         if (!$updateStmt->execute()) {
+    //             throw new Exception("Failed to update book availability.");
+    //         }
+    
+    //         // Insert transaction
+    //         $sql = "INSERT INTO {$this->table} (student_id, book_id, borrow_date, status) VALUES (?, ?, ?, ?)";
+    //         $stmt = $this->connect->prepare($sql);
+    //         $stmt->bind_param("iiss", $student_id, $book_id, $borrow_date, $status);
+    //         if (!$stmt->execute()) {
+    //             throw new Exception("Failed to record transaction.");
+    //         }
+    
+    //         // Commit transaction
+    //         $this->connect->commit();
+    //         return ['success' => true, 'message' => 'Book borrowed successfully'];
+    //     } catch (Exception $e) {
+    //         $this->connect->rollback();
+    //         return ['success' => false, 'message' => $e->getMessage()];
+    //     }
+    // }
+    // In Transaction model
+    // Model: Transaction.php
+public function borrowBook($student_id, $book_id, $return_date) {
+    $borrow_date = date('Y-m-d');
+    $status = 'borrowed';
 
-        $sql = "INSERT INTO {$this->table} (student_id, book_id, borrow_date, return_date, status) 
-                VALUES (?, ?, ?, ?, ?)";
+    if ($this->hasBorrowedBook($student_id, $book_id)) {
+        return ['success' => false, 'message' => 'You have already borrowed this book'];
+    }
+
+    // Start transaction
+    $this->connect->begin_transaction();
+
+    try {
+        // Decrement available copies
+        $updateBookSql = "UPDATE books SET available_copies = available_copies - 1 WHERE id = ? AND available_copies > 0";
+        $updateStmt = $this->connect->prepare($updateBookSql);
+        $updateStmt->bind_param("i", $book_id);
+        if (!$updateStmt->execute()) {
+            throw new Exception("Failed to update book availability.");
+        }
+
+        // Insert transaction
+        $sql = "INSERT INTO {$this->table} (student_id, book_id, borrow_date, return_date, status) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->connect->prepare($sql);
         $stmt->bind_param("iisss", $student_id, $book_id, $borrow_date, $return_date, $status);
-
-        if ($stmt->execute()) {
-            return [
-                'success' => true,
-                'message' => 'Book borrowed successfully'
-            ];
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to record transaction.");
         }
-        return [
-            'success' => false,
-            'message' => 'Failed to borrow book'
-        ];
+
+        // Commit transaction
+        $this->connect->commit();
+        return ['success' => true, 'message' => 'Book borrowed successfully'];
+    } catch (Exception $e) {
+        $this->connect->rollback();
+        return ['success' => false, 'message' => $e->getMessage()];
     }
+}
+
+public function hasBorrowedBook($student_id, $book_id) {
+    $sql = "SELECT id FROM {$this->table} WHERE student_id = ? AND book_id = ? AND status = 'borrowed'";
+    $stmt = $this->connect->prepare($sql);
+    $stmt->bind_param("ii", $student_id, $book_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->num_rows > 0;
+}
+
+    
 
     // Return a book
     public function returnBook($transaction_id) {

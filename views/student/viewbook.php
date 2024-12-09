@@ -1,30 +1,43 @@
 <?php
 require_once '/xampp/htdocs/lms_system/config/database.php';
-require_once '/xampp/htdocs/lms_system/controllers/BookController.php';
+require_once '/xampp/htdocs/lms_system/controllers/libraryController.php';
 
+// Initialize controller
+$transactionController = new TransactionController($connect);
+
+// Get book details
+$bookId = $_GET['id'] ?? null;
+if (!$bookId) {
+    echo "Book ID is missing.";
+    exit;
+}
+
+// Fetch book details
+require_once '/xampp/htdocs/lms_system/controllers/BookController.php';
 $bookController = new BookController($connect);
-$id = $_GET['id'];
-$book = $bookController->getBook($id);
+$book = $bookController->getBook($bookId);
 
 if (!$book) {
     echo "Book not found.";
     exit;
 }
 
+// Handle form submission
+$message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id = $_POST['id'];
-    $return_date = $_POST['return_date']; // Capture the return date
+    $studentId = $_POST['student_id'] ?? null;
+    $returnDate = $_POST['return_date'] ?? null;
 
-    // Call the borrowBook method with the return date
-    // $result = $bookController->borrowBook($id, $return_date);
-
-    // if ($result) {
-    //     header('Location: /lms_system/views/student/students.php?message=Book Borrowed Successfully');
-    //     exit;
-    // } else {
-    //     header('Location: /lms_system/views/student/book.php?error=Failed to Borrow Book');
-    //     exit;
-    // }
+    if (!$studentId || !$returnDate) {
+        $message = 'Student ID and return date are required.';
+    } else {
+        $result = json_decode($transactionController->borrowBook($studentId, $bookId, $returnDate), true);
+        $message = $result['message'];
+        if ($result['status'] === 'success') {
+            header('Location: /lms_system/views/student/students.php?message=' . urlencode($message));
+            exit;
+        }
+    }
 }
 ?>
 
@@ -41,6 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h1>Book Details</h1>
     <div class="card">
         <div class="card-body">
+            <?php if (!empty($message)) : ?>
+                <div class="alert alert-<?= $result['status'] === 'success' ? 'success' : 'danger' ?>">
+                    <?= htmlspecialchars($message) ?>
+                </div>
+            <?php endif; ?>
+
             <p><strong>Title:</strong> <?= htmlspecialchars($book['title']) ?></p>
             <p><strong>Author:</strong> <?= htmlspecialchars($book['author']) ?></p>
             <p><strong>ISBN:</strong> <?= htmlspecialchars($book['isbn']) ?></p>
@@ -48,7 +67,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <?php if ($book['available_copies'] > 0) : ?>
                 <form method="post">
-                    <input type="hidden" name="id" value="<?= htmlspecialchars($book['id']) ?>">
+                    <div class="mb-3">
+                        <label for="student_id" class="form-label">Student ID</label>
+                        <input type="number" class="form-control" id="student_id" name="student_id" required>
+                    </div>
                     <div class="mb-3">
                         <label for="return_date" class="form-label">Set Return Date</label>
                         <input type="date" class="form-control" id="return_date" name="return_date" required>

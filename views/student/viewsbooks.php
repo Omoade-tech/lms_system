@@ -1,23 +1,40 @@
 <?php
+require_once '/xampp/htdocs/lms_system/config/database.php';
+require_once '/xampp/htdocs/lms_system/controllers/libraryController.php';
+
+
+$transactionController = new TransactionController($connect);
+$id = $_GET['id'];
+
+require_once '/xampp/htdocs/lms_system/controllers/BookController.php';
+$bookController = new BookController($connect);
+$book = $bookController->getBook($id);
+
+if (!$book) {
+    echo "Book not found.";
+    exit;
+}
+
+$message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id = $_POST['id'];
-    $return_date = $_POST['return_date'];
     $student_id = $_POST['student_id'];
-    $student_name = $_POST['student_name'];
+    $book_id = $_POST['book_id'];
+    $return_date = $_POST['return_date'];
 
-    $result = $bookController->borrowBook($id, $return_date, $student_id, $student_name);
+    $result = $transactionController->borrowBook($student_id, $book_id, $return_date);
+    $response = json_decode($result, true);
 
-    if ($result) {
+    if ($response['status'] === 'success') {
         header('Location: /lms_system/views/student/students.php?message=Book Borrowed Successfully');
         exit;
     } else {
-        header('Location: /lms_system/views/student/book.php?error=Failed to Borrow Book');
-        exit;
+        $message = $response['message'];
     }
 }
 ?>
 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -27,29 +44,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 <div class="container mt-5">
+    <h1>Book Details</h1>
+    <?php if (!empty($message)) : ?>
+        <div class="alert alert-danger"><?= htmlspecialchars($message) ?></div>
+    <?php endif; ?>
     <div class="card">
         <div class="card-body">
+            <p><strong>Title:</strong> <?= htmlspecialchars($book['title']) ?></p>
+            <p><strong>Author:</strong> <?= htmlspecialchars($book['author']) ?></p>
+            <p><strong>ISBN:</strong> <?= htmlspecialchars($book['isbn']) ?></p>
+            <p><strong>Available Copies:</strong> <?= htmlspecialchars($book['available_copies']) ?></p>
 
-
-<form method="post">
-    <input type="hidden" name="id" value="<?= htmlspecialchars($book['id']) ?>">
-    <div class="mb-3">
-        <label for="student_id" class="form-label">Student ID</label>
-        <input type="text" class="form-control" id="student_id" name="student_id" required>
+            <?php if ($book['available_copies'] > 0) : ?>
+                <form method="post">
+                    <input type="hidden" name="student_id" value="<?= htmlspecialchars($_SESSION['student_id']) ?>">
+                    <input type="hidden" name="book_id" value="<?= htmlspecialchars($book['id']) ?>">
+                    <div class="mb-3">
+                        <label for="return_date" class="form-label">Set Return Date</label>
+                        <input type="date" class="form-control" id="return_date" name="return_date" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Confirm Borrow</button>
+                </form>
+            <?php else : ?>
+                <button class="btn btn-secondary" disabled>Not Available</button>
+            <?php endif; ?>
+            <a href="/lms_system/views/student/students.php" class="btn btn-secondary mt-3">Back to List</a>
+        </div>
     </div>
-    <div class="mb-3">
-        <label for="student_name" class="form-label">Student Name</label>
-        <input type="text" class="form-control" id="student_name" name="student_name" required>
-    </div>
-    <div class="mb-3">
-        <label for="return_date" class="form-label">Set Return Date</label>
-        <input type="date" class="form-control" id="return_date" name="return_date" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Confirm Borrow</button>
-</form>
-
-</div>
-</div>
 </div>
 </body>
 </html>
