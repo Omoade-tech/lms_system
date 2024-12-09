@@ -28,20 +28,49 @@ class BookController {
         return $this->bookModel->delete($id);
     }
 
-    public function borrowBook($id) {
-        // Check if the book is available
+    // public function borrowBook($id) {
+    
+    //     $book = $this->bookModel->getBookById($id);
+    //     if (!$book || $book['available_copies'] <= 0) {
+    //         return false; 
+    //     }
+
+        
+    //     $borrow_date = date("Y-m-d"); 
+    //     $return_date = date("Y-m-d", strtotime("+30 days")); 
+
+
+    //     return $this->bookModel->borrowBook($id, $borrow_date, $return_date);
+    // }
+    public function borrowBook($id, $return_date, $student_id, $student_name) {
         $book = $this->bookModel->getBookById($id);
+    
         if (!$book || $book['available_copies'] <= 0) {
             return false; 
         }
-
-        
-        $borrow_date = date("Y-m-d"); 
-        $return_date = date("Y-m-d", strtotime("+30 days")); 
-
-        // Update the book and create a transaction
-        return $this->bookModel->borrowBook($id, $borrow_date, $return_date);
+    
+        $borrow_date = date("Y-m-d");
+    
+        // Borrow the book in the Book model
+        $isBookBorrowed = $this->bookModel->borrowBook($id, $borrow_date, $return_date);
+    
+        if ($isBookBorrowed) {
+            // Record transaction in the Transaction model
+            $transactionModel = new Transaction($this->bookModel->connect); // Assuming same connection
+            return $transactionModel->createTransaction([
+                'student_id' => $student_id,
+                'student_name' => $student_name,
+                'book_id' => $id,
+                'book_title' => $book['title'],
+                'borrow_date' => $borrow_date,
+                'return_date' => $return_date,
+                'status' => 'Borrowed'
+            ]);
+        }
+    
+        return false;
     }
+    
 
     public function handleRequest() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

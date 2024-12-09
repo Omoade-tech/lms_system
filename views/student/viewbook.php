@@ -16,15 +16,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $return_date = $_POST['return_date']; // Capture the return date
 
     // Call the borrowBook method with the return date
-    $result = $bookController->borrowBook($id, $return_date);
+    // $result = $bookController->borrowBook($id, $return_date);
 
-    if ($result) {
-        header('Location: /lms_system/views/student/students.php?message=Book Borrowed Successfully');
-        exit;
-    } else {
-        header('Location: /lms_system/views/student/book.php?error=Failed to Borrow Book');
-        exit;
-    }
+    // if ($result) {
+    //     header('Location: /lms_system/views/student/students.php?message=Book Borrowed Successfully');
+    //     exit;
+    // } else {
+    //     header('Location: /lms_system/views/student/book.php?error=Failed to Borrow Book');
+    //     exit;
+    // }
 }
 ?>
 
