@@ -1,5 +1,4 @@
 <?php
-// Start session
 // session_start();
 
 // Check if the student is logged in
@@ -11,24 +10,15 @@ if (!isset($_SESSION['student_id'])) {
 require_once '/xampp/htdocs/lms_system/config/database.php';
 require_once '/xampp/htdocs/lms_system/controllers/libraryController.php';
 
-
 $transactionController = new TransactionController($connect);
 
 // Fetch the logged-in student's transactions
 $studentId = $_SESSION['student_id'];
-$response = json_decode($transactionController->getTransactionById($studentId), true);
+$response = json_decode($transactionController->getStudentTransactions($studentId), true);
 
-// if ($response['status'] !== 'success') {
-//     echo "<p>Error: " . htmlspecialchars($response['message']) . "</p>";
-//     exit;
-// }
-
-// Ensure $transactions is always an array
-$transactions = $response['transaction'];
-if (!is_array($transactions) || isset($transactions['id'])) {
-    $transactions = [$transactions]; 
-}
+$transactions = $response['status'] === 'success' ? $response['transaction'] : [];
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

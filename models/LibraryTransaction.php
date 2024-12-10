@@ -74,6 +74,29 @@ class Transaction {
         $result = $stmt->get_result();
         return $result->fetch_all(MYSQLI_ASSOC);
     }
+    // Add this method to your existing Transaction class
+public function findAllByStudentId($student_id) {
+    $student_id = (int)$student_id;
+    $sql = "SELECT 
+                t.id, 
+                t.student_id, 
+                s.name as student_name, 
+                t.book_id, 
+                b.title as book_title, 
+                t.borrow_date, 
+                t.return_date, 
+                t.status 
+            FROM {$this->table} t
+            JOIN students s ON t.student_id = s.id
+            JOIN books b ON t.book_id = b.id
+            WHERE t.student_id = ?
+            ORDER BY t.borrow_date DESC";  // Order by most recent first
+    $stmt = $this->connect->prepare($sql);
+    $stmt->bind_param("i", $student_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
 
     // Create a new transaction
     public function createTransaction($data) {
@@ -116,45 +139,7 @@ class Transaction {
             error_log($e->getMessage());
             return false;
         }
-    }
-
-
-
-    // Borrow a book
-    // public function borrowBook($student_id, $book_id) {
-    //     $borrow_date = date('Y-m-d');
-    //     $status = 'borrowed';
-    
-    //     // Start transaction
-    //     $this->connect->begin_transaction();
-    
-    //     try {
-    //         // Decrement available copies
-    //         $updateBookSql = "UPDATE books SET available_copies = available_copies - 1 WHERE id = ? AND available_copies > 0";
-    //         $updateStmt = $this->connect->prepare($updateBookSql);
-    //         $updateStmt->bind_param("i", $book_id);
-    //         if (!$updateStmt->execute()) {
-    //             throw new Exception("Failed to update book availability.");
-    //         }
-    
-    //         // Insert transaction
-    //         $sql = "INSERT INTO {$this->table} (student_id, book_id, borrow_date, status) VALUES (?, ?, ?, ?)";
-    //         $stmt = $this->connect->prepare($sql);
-    //         $stmt->bind_param("iiss", $student_id, $book_id, $borrow_date, $status);
-    //         if (!$stmt->execute()) {
-    //             throw new Exception("Failed to record transaction.");
-    //         }
-    
-    //         // Commit transaction
-    //         $this->connect->commit();
-    //         return ['success' => true, 'message' => 'Book borrowed successfully'];
-    //     } catch (Exception $e) {
-    //         $this->connect->rollback();
-    //         return ['success' => false, 'message' => $e->getMessage()];
-    //     }
-    // }
-    // In Transaction model
-    // Model: Transaction.php
+    } 
 public function borrowBook($student_id, $book_id, $return_date) {
     $borrow_date = date('Y-m-d');
     $status = 'borrowed';

@@ -135,62 +135,7 @@ class Book {
             error_log($e->getMessage());
             return false;
         }
-    }
-
-    // Borrow a book with grace period
-    public function borrowBook($id, $borrow_date, $return_date) {
-        try {
-            $book = $this->getBookById($id);
-
-            if (!$book) {
-                throw new Exception("Book not found.");
-            }
-
-            if ($book['available_copies'] <= 0) {
-                throw new Exception("No available copies to borrow.");
-            }
-
-            // Update available copies
-            $updateSql = "UPDATE books SET available_copies = available_copies - 1 WHERE id = ?";
-            $stmt = $this->connect->prepare($updateSql);
-            $stmt->bind_param("i", $id);
-            if (!$stmt->execute()) {
-                throw new Exception("Failed to update book availability.");
-            }
-
-            // Record borrow transaction
-            $Sql = "INSERT INTO transactions (book_id, borrow_date, return_date, status) VALUES (?, ?, ?, 'Borrowed')";
-            $stmt = $this->connect->prepare($Sql);
-            $stmt->bind_param("iss", $id, $borrow_date, $return_date);
-
-            return $stmt->execute();
-        } catch (Exception $e) {
-            error_log($e->getMessage());
-            return false;
-        }
-    }
-
-    // Return a borrowed book
-    public function returnBook($id) {
-        try {
-            $book = $this->getBookById($id);
-
-            if (!$book) {
-                throw new Exception("Book not found.");
-            }
-
-            $sql = "UPDATE books SET available_copies = available_copies + 1 WHERE id = ?";
-            $stmt = $this->connect->prepare($sql);
-            $stmt->bind_param("i", $id);
-
-            return $stmt->execute();
-        } catch (Exception $e) {
-            error_log($e->getMessage());
-            return false;
-        }
-    }
-
-    // Search books
+    } 
     public function searchBooks($searchTerm) {
         $searchPattern = "%{$searchTerm}%";
         $sql = "SELECT * FROM books WHERE title LIKE ? OR author LIKE ? OR isbn LIKE ?";

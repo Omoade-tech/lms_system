@@ -63,6 +63,19 @@ class TransactionController {
         }
     }
 
+public function getStudentTransactions($student_id) {
+    if (empty($student_id) || !is_numeric($student_id)) {
+        return $this->sendResponse('error', null, 'Invalid student ID');
+    }
+
+    try {
+        $transactions = $this->transaction->findAllByStudentId($student_id);
+        return $this->sendResponse('success', $transactions);
+    } catch (Exception $e) {
+        return $this->sendResponse('error', null, $e->getMessage());
+    }
+}
+
     // Update an existing transaction by ID
     public function updateTransaction($id, $data) {
         if (empty($id) || !is_numeric($id)) {
