@@ -90,7 +90,7 @@ public function findAllByStudentId($student_id) {
             JOIN students s ON t.student_id = s.id
             JOIN books b ON t.book_id = b.id
             WHERE t.student_id = ?
-            ORDER BY t.borrow_date DESC";  // Order by most recent first
+            ORDER BY t.borrow_date DESC";  
     $stmt = $this->connect->prepare($sql);
     $stmt->bind_param("i", $student_id);
     $stmt->execute();
@@ -189,27 +189,36 @@ public function hasBorrowedBook($student_id, $book_id) {
     
 
     // Return a book
-    public function returnBook($transaction_id) {
-        $return_date = date('Y-m-d');
-        $status = 'returned';
-
-        $sql = "UPDATE {$this->table} 
-                SET return_date = ?, status = ? 
-                WHERE id = ? AND status = 'borrowed'";
-        $stmt = $this->connect->prepare($sql);
-        $stmt->bind_param("ssi", $return_date, $status, $transaction_id);
-
-        if ($stmt->execute()) {
-            return [
-                'success' => true,
-                'message' => 'Book returned successfully'
-            ];
-        }
+  // Return a book
+public function returnBook($transaction_id) {
+    if (empty($transaction_id)) {
         return [
             'success' => false,
-            'message' => 'Failed to return book or book already returned'
+            'message' => 'Transaction ID is required'
         ];
     }
+
+    $return_date = date('Y-m-d');
+    $status = 'returned';
+
+    $sql = "UPDATE {$this->table} 
+            SET return_date = ?, status = ? 
+            WHERE id = ? AND status = 'borrowed'";
+    $stmt = $this->connect->prepare($sql);
+    $stmt->bind_param("ssi", $return_date, $status, $transaction_id);
+
+    if ($stmt->execute() && $stmt->affected_rows > 0) {
+        return [
+            'success' => true,
+            'message' => 'Book returned successfully'
+        ];
+    }
+
+    return [
+        'success' => false,
+        'message' => 'Failed to return book or book already returned'
+    ];
+}
 
    
 }

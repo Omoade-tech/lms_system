@@ -24,24 +24,20 @@ $transactions = $response['status'] === 'success' ? $response['transaction'] : [
 // Filter only currently borrowed books
 $borrowedBooks = array_filter($transactions, function($transaction) {
     return $transaction['status'] === 'borrowed';
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['transaction_id'])) {
-        $transactionId = $_POST['transaction_id'];
-        $response = json_decode($transactionController->returnBook($transactionId), true);
-    
-        if ($response['status'] === 'success') {
-            $_SESSION['success_message'] = "Book returned successfully!";
-        } else {
-            $_SESSION['error_message'] = $response['message'] ?? "Failed to return the book.";
-        }
-    
-        header('Location: return_book.php');
-        exit;
-    } else {
-        header('Location: return_books.php');
-        exit;
-    }
 });
+
+// Handle book return request
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['transaction_id'])) {
+    $transactionId = $_POST['transaction_id'];
+    $response = json_decode($transactionController->returnBook($transactionId), true);
+
+    if ($response['status'] === 'success') {
+        $_SESSION['success_message'] = "Book returned successfully!";
+    } else {
+        $_SESSION['error_message'] = $response['message'] ?? "Failed to return the book.";
+    }
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -64,6 +60,14 @@ $borrowedBooks = array_filter($transactions, function($transaction) {
             <?php unset($_SESSION['success_message']); ?>
         <?php endif; ?>
 
+        <?php if (isset($_SESSION['error_message'])): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?= htmlspecialchars($_SESSION['error_message']) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['error_message']); ?>
+        <?php endif; ?>
+
         <?php if (empty($borrowedBooks)): ?>
             <div class="alert alert-info">
                 You have no books currently borrowed to return.
@@ -83,7 +87,6 @@ $borrowedBooks = array_filter($transactions, function($transaction) {
                 </thead>
                 <tbody>
                     <?php foreach ($borrowedBooks as $index => $transaction): 
-                        // Get book details
                         $book = $bookModel->getBookById($transaction['book_id']);
                     ?>
                         <tr>
@@ -96,7 +99,6 @@ $borrowedBooks = array_filter($transactions, function($transaction) {
                             <td>
                                 <form method="POST">
                                     <input type="hidden" name="transaction_id" value="<?= htmlspecialchars($transaction['id']) ?>">
-                                    
                                     <button type="submit" class="btn btn-danger btn-sm" 
                                             onclick="return confirm('Are you sure you want to return this book?')">
                                         Return Book

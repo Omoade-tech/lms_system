@@ -114,21 +114,22 @@ public function borrowBook($student_id, $book_id, $return_date) {
 
 
 
-    // Return a book
-    public function returnBook($transaction_id) {
-        if (empty($transaction_id) || !is_numeric($transaction_id)) {
-            return $this->sendResponse('error', null, 'Invalid transaction ID');
-        }
-
-        try {
-            $response = $this->transaction->returnBook($transaction_id);
-            return $this->sendResponse(
-                $response['success'] ? 'success' : 'error',
-                null,
-                $response['message']
-            );
-        } catch (Exception $e) {
-            return $this->sendResponse('error', null, $e->getMessage());
-        }
+   // Return a book by transaction ID
+public function returnBook($transaction_id) {
+    if (empty($transaction_id) || !is_numeric($transaction_id)) {
+        return $this->sendResponse('error', null, 'Invalid transaction ID');
     }
+
+    try {
+        $result = $this->transaction->returnBook($transaction_id);
+        if ($result['success']) {
+            return $this->sendResponse('success', null, $result['message']);
+        } else {
+            return $this->sendResponse('error', null, $result['message']);
+        }
+    } catch (Exception $e) {
+        return $this->sendResponse('error', null, $e->getMessage());
+    }
+}
+
 }
