@@ -140,9 +140,57 @@ public function findAllByStudentId($student_id) {
             return false;
         }
     } 
+// public function borrowBook($student_id, $book_id, $return_date) {
+//     $borrow_date = date('Y-m-d');
+//     $status = 'borrowed';
+
+//     if ($this->hasBorrowedBook($student_id, $book_id)) {
+//         return ['success' => false, 'message' => 'You have already borrowed this book'];
+//     }
+
+    // Start transaction
+    // $this->connect->begin_transaction();
+
+    // try {
+        // Decrement available copies
+        // $updateBookSql = "UPDATE books SET available_copies = available_copies - 1 WHERE id = ? AND available_copies > 0";
+        // $updateStmt = $this->connect->prepare($updateBookSql);
+        // $updateStmt->bind_param("i", $book_id);
+        // if (!$updateStmt->execute()) {
+        //     throw new Exception("Failed to update book availability.");
+        // }
+
+        // Insert transaction
+        // $sql = "INSERT INTO {$this->table} (student_id, book_id, borrow_date, return_date, status) VALUES (?, ?, ?, ?, ?)";
+        // $stmt = $this->connect->prepare($sql);
+        // $stmt->bind_param("iisss", $student_id, $book_id, $borrow_date, $return_date, $status);
+        // if (!$stmt->execute()) {
+        //     throw new Exception("Failed to record transaction.");
+        // }
+
+        // Commit transaction
+//         $this->connect->commit();
+//         return ['success' => true, 'message' => 'Book borrowed successfully'];
+//     } catch (Exception $e) {
+//         $this->connect->rollback();
+//         return ['success' => false, 'message' => $e->getMessage()];
+//     }
+// }
 public function borrowBook($student_id, $book_id, $return_date) {
     $borrow_date = date('Y-m-d');
     $status = 'borrowed';
+
+    // Check if the student has already borrowed the maximum allowed books
+    $sql = "SELECT COUNT(*) as count FROM {$this->table} WHERE student_id = ? AND status = 'borrowed'";
+    $stmt = $this->connect->prepare($sql);
+    $stmt->bind_param("i", $student_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $borrowedCount = $result->fetch_assoc()['count'];
+
+    if ($borrowedCount >= 3) {
+        return ['success' => false, 'message' => 'You cannot borrow more than 3 books at a time.'];
+    }
 
     if ($this->hasBorrowedBook($student_id, $book_id)) {
         return ['success' => false, 'message' => 'You have already borrowed this book'];
@@ -176,6 +224,7 @@ public function borrowBook($student_id, $book_id, $return_date) {
         return ['success' => false, 'message' => $e->getMessage()];
     }
 }
+
 
 public function hasBorrowedBook($student_id, $book_id) {
     $sql = "SELECT id FROM {$this->table} WHERE student_id = ? AND book_id = ? AND status = 'borrowed'";

@@ -1,5 +1,5 @@
 <?php
-session_start(); 
+session_start();
 include("/xampp/htdocs/lms_system/config/database.php");
 
 $error_message = "";
@@ -40,23 +40,24 @@ if (isset($_POST['log'])) {
         }
 
         // Handle successful login
-       // If a valid user is found, start the session and redirect
-       if ($row && $role) {
-        $_SESSION['student_id'] = $row['id'];  
-        $_SESSION['role'] = $role;
+        if ($row && $role) {
+            // Set required session variables
+            $_SESSION['student_id'] = $row['id']; // Universal ID for both roles
+            $_SESSION['name'] = $row['name'];    // Assuming both admins and students have 'name' column
+            $_SESSION['email'] = $row['email'];  // Assuming both admins and students have 'email' column
+            $_SESSION['role'] = $role;
 
-        if ($role === "admin") {
-            header("location:/lms_system/views/Admin/admin.php");
-        } elseif ($role === "student") {
-            header("location: /lms_system/views/student/students.php");
+            if ($role === "admin") {
+                header("location:/lms_system/views/Admin/admin.php");
+            } elseif ($role === "student") {
+                header("location: /lms_system/views/student/students.php");
+            }
+            exit;
+        } else {
+            $error_message = "Incorrect username or password.";
         }
-        exit;
-    } else {
-        $error_message = "Incorrect username or password.";
     }
 }
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -90,7 +91,7 @@ if (isset($_POST['log'])) {
                        class="form-control" placeholder="Enter your password" required>
             </div>
             <button type="submit" name="log" class="btn btn-primary w-100">Login</button>
-            <a href="/lms_system/Auth/signup.php">create account</a>
+            <a href="/lms_system/Auth/signup.php">Create Account</a>
         </form>
     </div>
 </div>
