@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['transaction_id'])) {
                         $book = $bookModel->getBookById($transaction['book_id']);
                     ?>
                         <tr>
-                            <td><?= htmlspecialchars($index + 1) ?></td>
+                            <td><?= htmlspecialchars($index) ?></td>
                             <td><?= htmlspecialchars($book['title'] ?? 'Unknown Title') ?></td>
                             <td><?= htmlspecialchars($book['isbn'] ?? 'N/A') ?></td>
                             <td><?= htmlspecialchars($book['author'] ?? 'Unknown') ?></td>

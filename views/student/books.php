@@ -70,7 +70,8 @@ $books = $bookController->getAllBooks();
                         <p><strong>Title:</strong> <?= htmlspecialchars($book['title']) ?></p>
                         <p><strong>Author:</strong> <?= htmlspecialchars($book['author']) ?></p>
                         <p><strong>ISBN:</strong> <?= htmlspecialchars($book['isbn']) ?></p>
-                        <p><strong>Available Copies:</strong> <?= $book['available_copies'] > 0 ? 'Available' : 'Not Available' ?></p>
+                        <p><strong>Available Copies:</strong> <?= htmlspecialchars($book['available_copies']) ?></p>
+
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

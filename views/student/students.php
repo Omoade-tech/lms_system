@@ -2,8 +2,8 @@
 
 session_start();
 
-include_once("/xampp/htdocs/lms_system/config/database.php"); 
-include_once("/xampp/htdocs/lms_system/controllers/studentController.php"); 
+include_once("/xampp/htdocs/lms_system/config/database.php");
+include_once("/xampp/htdocs/lms_system/controllers/studentController.php");
 
 // Initialize database connection
 $studentController = new StudentController($connect);
@@ -15,11 +15,11 @@ if (!isset($_SESSION['student_id'])) {
 }
 
 $student_id = $_SESSION['student_id'];
-$studentResponse = $studentController->findStudentById($student_id); 
+$studentResponse = $studentController->findStudentById($student_id);
 
 
 if (isset($studentResponse['error'])) {
-    echo $studentResponse['error'];  
+    echo $studentResponse['error'];
     exit();
 }
 
@@ -34,17 +34,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Check for any update errors
     if (isset($updateResponse['error'])) {
-        echo $updateResponse['error'];  
+        echo $updateResponse['error'];
     } else {
-        echo $updateResponse['message'];  
-        $studentResponse = $studentController->findStudentById($student_id); 
-        $student = $studentResponse['student'];  
+        echo $updateResponse['message'];
+        $studentResponse = $studentController->findStudentById($student_id);
+        $student = $studentResponse['student'];
     }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,14 +55,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
 </head>
 <style>
-    .nav-link{
-        color:blue;
+    .nav-link {
+        color: blue;
     }
 </style>
+
 <body>
-<?php
-include("/xampp/htdocs/lms_system/templates/header.php");
-?>
+    <?php
+    include("/xampp/htdocs/lms_system/templates/header.php");
+    ?>
     <div class="container mt-5">
         <!-- Student Profile Display -->
         <h1>Student Profile</h1>
@@ -74,7 +76,7 @@ include("/xampp/htdocs/lms_system/templates/header.php");
                 <p class="card-text"><strong>Sex:</strong> <?= isset($student['sex']) ? htmlspecialchars($student['sex']) : 'No Sex Available'; ?></p>
                 <p class="card-text"><strong>Age:</strong> <?= isset($student['age']) ? htmlspecialchars($student['age']) : 'No Age Available'; ?></p>
                 <p class="card-text"><strong>Total Book Borrowed:</strong> <?= isset($student['total_books_borrowed']) ? htmlspecialchars($student['total_books_borrowed']) : 'error'; ?></p>
-                
+
                 <!-- Button to trigger the update modal -->
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateProfileModal">Edit Profile</button>
             </div>
@@ -91,7 +93,7 @@ include("/xampp/htdocs/lms_system/templates/header.php");
                 </div>
                 <div class="modal-body">
                     <!-- Profile Update Form -->
-                    <form  method="POST"> 
+                    <form method="POST">
                         <input type="hidden" name="id" value="<?= isset($student['id']) ? htmlspecialchars($student['id']) : ''; ?>">
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
@@ -107,8 +109,12 @@ include("/xampp/htdocs/lms_system/templates/header.php");
                         </div>
                         <div class="mb-3">
                             <label for="sex" class="form-label">Sex</label>
-                            <input type="text" class="form-control" id="sex" name="sex" value="<?= isset($student['sex']) ? htmlspecialchars($student['sex']) : ''; ?>">
+                            <select class="form-select" id="sex" name="sex" required>
+                                <option value="Male" <?= isset($student['sex']) && $student['sex'] === 'Male' ? 'selected' : ''; ?>>Male</option>
+                                <option value="Female" <?= isset($student['sex']) && $student['sex'] === 'Female' ? 'selected' : ''; ?>>Female</option>
+                            </select>
                         </div>
+
                         <div class="mb-3">
                             <label for="age" class="form-label">Age</label>
                             <input type="number" class="form-control" id="age" name="age" value="<?= isset($student['age']) ? htmlspecialchars($student['age']) : ''; ?>">
@@ -125,12 +131,13 @@ include("/xampp/htdocs/lms_system/templates/header.php");
     include("/xampp/htdocs/lms_system/views/student/transaction.php");
     include("/xampp/htdocs/lms_system/views/student/returnbook.php");
 
-include("/xampp/htdocs/lms_system/templates/footer.php");
+    include("/xampp/htdocs/lms_system/templates/footer.php");
 
-?>
+    ?>
 
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
+
 </html>
