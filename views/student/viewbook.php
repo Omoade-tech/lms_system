@@ -1,6 +1,15 @@
 <?php
+session_start(); 
+
 require_once '/xampp/htdocs/lms_system/config/database.php';
 require_once '/xampp/htdocs/lms_system/controllers/libraryController.php';
+require_once '/xampp/htdocs/lms_system/controllers/BookController.php';
+
+// Check if student is logged in
+if (!isset($_SESSION['student_id'])) {
+    header('Location: /lms_system/views/login.php');
+    exit;
+}
 
 // Initialize controller
 $transactionController = new TransactionController($connect);
@@ -12,8 +21,6 @@ if (!$bookId) {
     exit;
 }
 
-// Fetch book details
-require_once '/xampp/htdocs/lms_system/controllers/BookController.php';
 $bookController = new BookController($connect);
 $book = $bookController->getBook($bookId);
 
@@ -25,11 +32,11 @@ if (!$book) {
 // Handle form submission
 $message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $studentId = $_POST['student_id'] ?? null;
+    $studentId = $_SESSION['student_id'];
     $returnDate = $_POST['return_date'] ?? null;
 
-    if (!$studentId || !$returnDate) {
-        $message = 'Student ID and return date are required.';
+    if (!$returnDate) {
+        $message = 'Return date is required.';
     } else {
         $result = json_decode($transactionController->borrowBook($studentId, $bookId, $returnDate), true);
         $message = $result['message'];
@@ -67,10 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <?php if ($book['available_copies'] > 0) : ?>
                 <form method="post">
-                    <div class="mb-3">
-                        <label for="student_id" class="form-label">Student ID</label>
-                        <input type="number" class="form-control" id="student_id" name="student_id" required>
-                    </div>
                     <div class="mb-3">
                         <label for="return_date" class="form-label">Set Return Date</label>
                         <input type="date" class="form-control" id="return_date" name="return_date" required>
