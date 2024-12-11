@@ -68,6 +68,23 @@ if (isset($_POST['log'])) {
     <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<style>
+        body {
+            background-image: url("/lms_system/Assets/image2.jpg");
+            background-repeat: repeat;
+            background-size: auto; 
+            animation: moveBackground 4s infinite alternate ease-in-out;
+        }
+
+        @keyframes moveBackground {
+            0% {
+                background-position: 0% 50%; 
+            }
+            100% {
+                background-position: 100% 50%; 
+            }
+        }
+    </style>
 <body class="bg-light">
 
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
@@ -91,7 +108,9 @@ if (isset($_POST['log'])) {
                        class="form-control" placeholder="Enter your password" required>
             </div>
             <button type="submit" name="log" class="btn btn-primary w-100">Login</button>
-            <a href="/lms_system/Auth/signup.php">Create Account</a>
+            <div class="mt-3">
+            <p><i>You don't have an account</i> <a href="/lms_system/Auth/signup.php">Signup</a></p>
+            </div>
         </form>
     </div>
 </div>

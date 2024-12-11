@@ -1,5 +1,5 @@
 <?php
-// session_start();
+session_start();
 
 // Check if the student is logged in
 if (!isset($_SESSION['student_id'])) {
