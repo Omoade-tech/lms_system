@@ -95,22 +95,7 @@ public function getStudentTransactions($student_id) {
     }
 
    
-// public function borrowBook($student_id, $book_id, $return_date) {
-//     if (empty($student_id) || empty($book_id) || empty($return_date)) {
-//         return $this->sendResponse('error', null, 'Missing student ID, book ID, or return date');
-//     }
 
-//     try {
-//         $response = $this->transaction->borrowBook($student_id, $book_id, $return_date);
-//         return $this->sendResponse(
-//             $response['success'] ? 'success' : 'error',
-//             null,
-//             $response['message']
-//         );
-//     } catch (Exception $e) {
-//         return $this->sendResponse('error', null, $e->getMessage());
-//     }
-// }
 public function borrowBook($student_id, $book_id, $return_date) {
     if (empty($student_id) || empty($book_id) || empty($return_date)) {
         return $this->sendResponse('error', null, 'Missing student ID, book ID, or return date');

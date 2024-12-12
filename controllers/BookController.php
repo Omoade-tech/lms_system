@@ -27,6 +27,22 @@ class BookController {
     public function deleteBook($id) {
         return $this->bookModel->delete($id);
     }
+    public function searchBooks($searchTerm) {
+        return $this->bookModel->searchBooks($searchTerm);
+    }
+    
+    // public function handleRequest() {
+    //     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    //         if (isset($_POST['searchBooks'])) {
+    //             $searchTerm = $_POST['search'];
+    //             $books = $this->searchBooks($searchTerm);
+    //             include "/xampp/htdocs/lms_system/views/Admin/books.php"; 
+    //             exit;
+    //         }
+        
+    //     }
+    // }
+    
 
   
     
@@ -41,6 +57,12 @@ class BookController {
                     header("Location: /lms_system/views/Admin/books.php?error=delete");
                 }
                 exit;
+                if (isset($_POST['searchBooks'])) {
+                    $searchTerm = $_POST['search'];
+                    $books = $this->searchBooks($searchTerm);
+                    include "/xampp/htdocs/lms_system/views/Admin/books.php"; 
+                    exit;
+                }
             }
 
             if (isset($_POST['updateBook'])) {
