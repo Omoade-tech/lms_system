@@ -27,10 +27,12 @@ $transactions = $response['status'] === 'success' ? $response['transaction'] : [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Transaction History</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 
 <body>
+ <?php
+    include("/xampp/htdocs/lms_system/templates/header.php");
+ ?> 
     <div class="container mt-5">
         <h2>Transaction History</h2>
     
@@ -61,6 +63,10 @@ $transactions = $response['status'] === 'success' ? $response['transaction'] : [
             <p>No transactions found for your account.</p>
         <?php endif; ?>
     </div>
+
+    <?php
+    include("/xampp/htdocs/lms_system/templates/footer.php");
+    ?>
 </body>
 
 </html>

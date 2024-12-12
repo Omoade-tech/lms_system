@@ -13,15 +13,20 @@ $books = $bookController->getAllBooks();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Library Management System</title>
-  <!-- Bootstrap CSS -->
   <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"> -->
 </head>
 
 <body>
-  
+<?php
+    include("/xampp/htdocs/lms_system/templates/header.php");
+?>
   <div class="container mt-5 me-5">
+  <h1>Borrow Books</h1>
     <div class="card">
+   
       <div class="card-body">
+
+      
         <table class="table">
           <thead class="thead-dark">
             <tr>
@@ -90,6 +95,9 @@ $books = $bookController->getAllBooks();
 
   <!-- Bootstrap JS and dependencies -->
   <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script> -->
+  <?php
+    include("/xampp/htdocs/lms_system/templates/footer.php");
+    ?>
 </body>
 
 </html>

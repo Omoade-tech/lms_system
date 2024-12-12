@@ -22,7 +22,7 @@ $response = json_decode($transactionController->getStudentTransactions($studentI
 $transactions = $response['status'] === 'success' ? $response['transaction'] : [];
 
 // Filter only currently borrowed books
-$borrowedBooks = array_filter($transactions, function($transaction) {
+$borrowedBooks = array_filter($transactions, function ($transaction) {
     return $transaction['status'] === 'borrowed';
 });
 
@@ -42,14 +42,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['transaction_id'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Return Borrowed Books</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
+<style>
+.side{
+    margin-left: 150px;
+}
+</style>
+
 <body>
-    <div class="container mt-5">
+    <?php
+    include("/xampp/htdocs/lms_system/templates/header.php");
+
+
+    ?>
+    <div class="container mt-5 side ">
         <h2 class="mb-4">Return Borrowed Books</h2>
 
         <?php if (isset($_SESSION['success_message'])): ?>
@@ -86,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['transaction_id'])) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($borrowedBooks as $index => $transaction): 
+                    <?php foreach ($borrowedBooks as $index => $transaction):
                         $book = $bookModel->getBookById($transaction['book_id']);
                     ?>
                         <tr>
@@ -99,8 +110,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['transaction_id'])) {
                             <td>
                                 <form method="POST">
                                     <input type="hidden" name="transaction_id" value="<?= htmlspecialchars($transaction['id']) ?>">
-                                    <button type="submit" class="btn btn-danger btn-sm" 
-                                            onclick="return confirm('Are you sure you want to return this book?')">
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Are you sure you want to return this book?')">
                                         Return Book
                                     </button>
                                 </form>
@@ -111,7 +122,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['transaction_id'])) {
             </table>
         <?php endif; ?>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <?php
+    include("/xampp/htdocs/lms_system/templates/footer.php");
+    ?>
 </body>
+
 </html>
