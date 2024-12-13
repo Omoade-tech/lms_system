@@ -37,7 +37,9 @@ CREATE TABLE books (
 CREATE TABLE transactions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     student_id INT NOT NULL,
+    student_name VARCHAR NOT NULL,
     book_id INT NOT NULL,
+    book_title VARCHAR NOT NULL,
     borrow_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     return_date TIMESTAMP NULL,
     status ENUM('borrowed', 'returned') NOT NULL,

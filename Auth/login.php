@@ -1,54 +1,61 @@
 <?php
-session_start(); 
-include("../config/database.php");
+session_start();
+include("/xampp/htdocs/lms_system/config/database.php");
+
+$error_message = "";
 
 if (isset($_POST['log'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
 
-    // Initialize variables
-    $role = null;
-    $row = null;
+    // Check if username and password are entered
+    if (empty($username) || empty($password)) {
+        $error_message = "Both username and password are required.";
+    } else {
+        $role = null;
+        $row = null;
 
-    // Check in the admins table
-    $sql = "SELECT * FROM admins WHERE username = ?";
-    $stmt = $connect->prepare($sql);
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $role = "admin";
-    }
-
-    // If not found in admins, check in the students table
-    if (!$row) {
-        $sql = "SELECT * FROM students WHERE username = ?";
+        // Check in admins table
+        $sql = "SELECT * FROM admins WHERE UserName = ? AND password = ?";
         $stmt = $connect->prepare($sql);
-        $stmt->bind_param("s", $username);
+        $stmt->bind_param("ss", $username, $password);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            $role = "student";
+            $role = "admin";
         }
-    }
 
-    // Validate password and handle login
-    if ($row) {
-        $_SESSION['username'] = $row['username'];
-        $_SESSION['password'] = $row['password'];
-        $_SESSION['role'] = $role;
-
-        // Redirect based on role
-        if ($role === "admin") {
-            header("location:/lms_system/views/admin.php");
-        } elseif ($role === "student") {
-            header("location: /lms_system/views/students.php");
+        // Check in students table if not found in admins
+        if (!$row) {
+            $sql = "SELECT * FROM students WHERE UserName = ? AND password = ?";
+            $stmt = $connect->prepare($sql);
+            $stmt->bind_param("ss", $username, $password);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $role = "student";
+            }
         }
-        exit;
-    } else {
-        $error_message = "Incorrect username or password.";
+
+        // Handle successful login
+        if ($row && $role) {
+            // Set required session variables
+            $_SESSION['student_id'] = $row['id']; // Universal ID for both roles
+            $_SESSION['name'] = $row['name'];    // Assuming both admins and students have 'name' column
+            $_SESSION['email'] = $row['email'];  // Assuming both admins and students have 'email' column
+            $_SESSION['role'] = $role;
+
+            if ($role === "admin") {
+                header("location:/lms_system/views/Admin/admin.php");
+            } elseif ($role === "student") {
+                header("location: /lms_system/views/student/students.php");
+            }
+            exit;
+        } else {
+            $error_message = "Incorrect username or password.";
+        }
     }
 }
 ?>
@@ -61,6 +68,23 @@ if (isset($_POST['log'])) {
     <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<style>
+        body {
+            background-image: url("/lms_system/Assets/image2.jpg");
+            background-repeat: repeat;
+            background-size: auto; 
+            animation: moveBackground 4s infinite alternate ease-in-out;
+        }
+
+        @keyframes moveBackground {
+            0% {
+                background-position: 0% 50%; 
+            }
+            100% {
+                background-position: 100% 50%; 
+            }
+        }
+    </style>
 <body class="bg-light">
 
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
@@ -84,6 +108,9 @@ if (isset($_POST['log'])) {
                        class="form-control" placeholder="Enter your password" required>
             </div>
             <button type="submit" name="log" class="btn btn-primary w-100">Login</button>
+            <div class="mt-3">
+            <p><i>You don't have an account</i> <a href="/lms_system/Auth/signup.php">Signup</a></p>
+            </div>
         </form>
     </div>
 </div>

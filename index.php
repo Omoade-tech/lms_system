@@ -4,6 +4,8 @@
 <html lang="en">
 
 <?php
-include("Auth/signup.php");
+
+include("Auth/login.php");
 ?>
 </html>
+

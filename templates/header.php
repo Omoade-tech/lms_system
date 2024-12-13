@@ -1,85 +1,86 @@
-<?php
-session_start();
-
-$_SESSION['name'] = 'Interns';
-$name = $_SESSION['name'] ?? 'Guest';
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>blog_post_connet</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
     <style>
-      .omo{
-        color: darkgreen;
-      }
+        .navbar-nav {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
 
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
     </style>
-</head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
-        <div class="container-fluid">
-             <a href="#">LMS</a>
-            <!-- Toggle button -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+<!-- </head> -->
+<!-- <body> -->
 
-            <!-- Collapsible wrapper -->
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <!-- Left links -->
-                 
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                     <li class="nav-item">
-                     <a class="nav-link" href="#">Books</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Transaction</a>
-                    </li>
-                  
-                </ul>
-                <!-- Left links -->
-            </div>
+<nav class="navbar navbar-expand-lg navbar-light bg-body-secondary">
+    <div class="container-fluid">
+        <!-- LMS Link at the beginning -->
+        <a class="navbar-brand" href="dashboard.php">
+            <i class="bi bi-book"></i> LMS
+        </a>
+
+        <!-- Toggle button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Collapsible wrapper -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- Center links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="books.php">
+                        <i class="bi bi-collection"></i> Library
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="returnbook.php">
+                        <i class="bi bi-arrow-return-left"></i> Return Book
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="transaction.php">
+                        <i class="bi bi-receipt"></i> Transaction
+                    </a>
+                </li>
+            </ul>
 
             <!-- Right elements -->
-            <div class="d-flex align-items-center">
-                <!-- Notifications -->
-                <!-- <div class="dropdown">
-                    <a class="link-secondary me-3 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-bell"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Some news</a></li>
-                        <li><a class="dropdown-item" href="#">Another news</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                </div> -->
-
+            <div class="d-flex align-items-center ms-3">
                 <!-- Avatar -->
                 <div class="dropdown">
-                    <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="./assest/image 16.png" class="rounded-circle" height="25" alt="User Avatar" loading="lazy">
-                    </a>
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="navbarDropdownMenuAvatar" data-bs-toggle="dropdown" aria-expanded="true">
+                        <i class="bi bi-person-circle"></i>
+                    </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
-                        <li><a class="dropdown-item" href="#">SignOut</a></li>
-                        <li><a class="dropdown-item" href="#">Logout</a></li>
+                        <li>
+                            <a class="dropdown-item" href="/lms_system/Auth/logout.php">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="students.php">
+                                <i class="bi bi-person"></i> Student
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
             <!-- Right elements -->
         </div>
-    </nav>
-    <!-- Navbar -->
+    </div>
+</nav>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</body>
-</html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<!-- </body> -->
+<!-- </html> -->

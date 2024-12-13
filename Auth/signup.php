@@ -1,5 +1,5 @@
 <?php
-include("config/database.php");
+require_once("../config/database.php");
 
 // Initialize variables
 $errors = [];
@@ -60,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // If no errors, check if username exists and insert into database
     if (empty($errors)) {
         // Check if username exists using prepared statement
-        $stmt = $connect->prepare("SELECT username FROM students WHERE username = ?");
+        $stmt = $connect->prepare("SELECT UserName FROM students WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $errors['username'] = "Username already exists";
         } else {
             // Insert new student using prepared statement
-            $stmt = $connect->prepare("INSERT INTO students (username, password, name, age, sex, phone, email) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $connect->prepare("INSERT INTO students (UserName, password, name, age, sex, phone, email) VALUES (?, ?, ?, ?, ?, ?, ?)");
             // $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             $stmt->bind_param("sssssss", $username, $password, $name, $age, $sex, $phone, $email);
 
@@ -94,14 +94,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Registration</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+         .body {
+            background-image: url("/lms_system/Assets/image2.jpg");
+            background-repeat: repeat;
+            background-size: cover; 
+            animation: moveBackground 4s infinite alternate ease-in-out;
+        }
+    </style>
 </head>
-<body class="bg-light">
+
+<body class="body">
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="card-title mb-0">Student Registration</h3>
+                    <div class="card-header bg-secondary text-white">
+                        <h3 class="card-title mb-0 text-center">Student Registration</h3>
                     </div>
                     <div class="card-body">
                         <?php if ($success): ?>
@@ -200,6 +209,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary">Register</button>
+                            </div>
+                            <div class="mt-3 flex-end">
+                               <p> <i> Already have an account</i> <a href="/lms_system/Auth/login.php">login</a> </p>
                             </div>
                         </form>
                     </div>
